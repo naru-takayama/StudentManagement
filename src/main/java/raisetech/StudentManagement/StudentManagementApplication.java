@@ -31,6 +31,7 @@ public class StudentManagementApplication {
   @PostMapping("/student")
   public void registerStudent(String name, int age) {
     repository.registerStudent(name, age);
+
   }
 
 
