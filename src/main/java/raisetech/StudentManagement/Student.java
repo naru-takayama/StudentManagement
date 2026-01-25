@@ -1,15 +1,15 @@
 package raisetech.StudentManagement;
 public class Student {
 
-  private String name;
+  private String fullName;
   private int age;
 
   public String getName() {
-    return name;
+    return fullName;
   }
 
   public void setName(String name) {
-    this.name = name;
+    this.fullName = name;
   }
 
   public int getAge() {
