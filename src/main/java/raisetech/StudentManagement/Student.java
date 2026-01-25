@@ -5,7 +5,6 @@ import lombok.Setter;
 
   @Getter
   @Setter
-
   public class Student {
   private String id;
   private String fullName;//「　_　」がついていた名前は「　_　」の後に大文字にすること！
