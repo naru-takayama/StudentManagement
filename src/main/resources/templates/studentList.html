@@ -19,6 +19,7 @@
     <th>年齢</th>
     <th>性別</th>
     <th>備考</th>
+    <th>受講コース</th>
 
   </tr>
   </thead>
@@ -34,9 +35,14 @@
     <td th:text="${studentDetail.student.age}">35</td>
     <td th:text="${studentDetail.student.gender}">dansei</td>
     <td th:text="${studentDetail.student.remark}">特になし</td>
-
-</tr>
-</tbody>
-</table>
-</body>
-</html>
+    <td>
+  <span th:if="${#lists.isEmpty(studentDetail.studentsCourses)}">未受講</span>
+    <span th:each="course : ${studentDetail.studentsCourses}">
+    <span th:text="${course.courseName}"></span><br>
+  </span>
+  </td>
+  </tr>
+  </tbody>
+  </table>
+  </body>
+  </html>
