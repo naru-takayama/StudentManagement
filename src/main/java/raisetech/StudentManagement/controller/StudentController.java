@@ -1,11 +1,17 @@
 package raisetech.StudentManagement.controller;
 import java.util.List;
+import javax.naming.Binding;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.bind.BindResult;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import raisetech.StudentManagement.controller.converter.StudentConverter;
 import raisetech.StudentManagement.data.Student;
 import raisetech.StudentManagement.data.StudentsCourses;
+import raisetech.StudentManagement.domain.StudentDetail;
 import raisetech.StudentManagement.service.StudentService;
 import org.springframework.ui.Model;
 
@@ -33,5 +39,22 @@ public class StudentController {
   @GetMapping("/studentsCoursesList")
   public List<StudentsCourses> getStudentsCoursesList() {
     return service.searchStudentsCoursesList();
+  }
+
+  @GetMapping("/newStudent")
+  public String newStudent(Model model){
+    model.addAttribute("studentDetail",new StudentDetail());
+    return "registerStudent";
+  }
+
+  @PostMapping("/registerstudent")
+  public String registerStudent(@ModelAttribute StudentDetail studentDetail, BindingResult result){
+    if(result.hasErrors()){
+      return "registerStudent";
+    }
+    //新規受講生情報を登録する処理を実装する。
+    //コース情報も一緒に登録できるように実装する。　コースは単体でいい。
+    service.registerStudent(studentDetail);
+    return "redirect:/studentList";
   }
 }
