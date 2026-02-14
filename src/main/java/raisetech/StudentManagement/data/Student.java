@@ -12,7 +12,7 @@ import lombok.Setter;
   private String nickname;
   private String email;
   private String region;
-  private int age;
+  private Integer age;
   private String  gender;
   private String remark;  //備考欄
   private boolean isDeleted;  //削除フラグ

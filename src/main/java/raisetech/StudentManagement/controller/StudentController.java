@@ -49,29 +49,15 @@ public class StudentController {
     List<StudentsCourses> courses =new ArrayList<>();
     courses.add(new StudentsCourses());
     detail.setStudentsCourses(courses);
-    model.addAttribute("studentDetail",new StudentDetail());
-    return "registerStudent";
-  }
-  @GetMapping("/registerStudent")
-  public String registerStudent(Model model) {
-
-    StudentDetail detail = new StudentDetail();
-    detail.setStudent(new Student());
-    detail.setStudentsCourses(new ArrayList<>());
-    detail.getStudentsCourses().add(new StudentsCourses());
-
     model.addAttribute("studentDetail", detail);
-
     return "registerStudent";
   }
 
-  @PostMapping("/registerstudent")
+  @PostMapping("/registerStudent")
   public String registerStudent(@ModelAttribute StudentDetail studentDetail, BindingResult result){
     if(result.hasErrors()){
       return "registerStudent";
     }
-    //新規受講生情報を登録する処理を実装する。
-    //コース情報も一緒に登録できるように実装する。　コースは単体でいい。
     service.registerStudent(studentDetail);
     return "redirect:/studentList";
   }
