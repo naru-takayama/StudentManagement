@@ -43,6 +43,36 @@ public class StudentService {
       course.setStartDate(LocalDate.now());
       course.setEndDate(LocalDate.from(LocalDateTime.now().plusYears(1)));
     repository.insertStudentsCourses(course);
+    }
   }
+  // 学生更新
+  @Transactional
+  public void updateStudent(StudentDetail studentDetail) {
+
+    //students テーブル更新
+    repository.updateStudent(studentDetail.getStudent());
+
+    //students_courses テーブル更新
+    for (StudentsCourses course : studentDetail.getStudentsCourses()) {
+      //studentIdを再セット
+      course.setStudentId(studentDetail.getStudent().getId());
+      repository.updateStudentsCourse(course);
+    }
+  }
+  // 1人の学生を取得（更新画面用）
+  public StudentDetail searchStudent(String id) {
+    // 学生を取得
+    Student student = repository.searchStudentById(id);
+
+    //コースを取得
+    List<StudentsCourses> courses =
+        repository.searchStudentsCoursesByStudentId(Integer.valueOf(id));
+
+    //StudentDetailにまとめる
+    StudentDetail detail = new StudentDetail();
+    detail.setStudent(student);
+    detail.setStudentsCourses(courses);
+
+    return detail;
   }
 }

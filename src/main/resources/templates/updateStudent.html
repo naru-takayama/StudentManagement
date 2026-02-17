@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>受講生更新</title>
+</head>
+<body>
+<h1>受講生更新</h1>
+
+<form th:action="@{/updateStudent}" th:object="${updateStudent}" method="post">
+
+  <!-- student id -->
+  <input type="hidden" th:field="*{student.id}" />
+
+  <div>
+    <label>名前：</label>
+    <input type="text" th:field="*{student.fullName}" required />
+  </div>
+
+  <div>
+    <label>フリガナ：</label>
+    <input type="text" th:field="*{student.furigana}" required />
+  </div>
+
+  <div>
+    <label>ニックネーム：</label>
+    <input type="text" th:field="*{student.nickname}" required />
+  </div>
+
+  <div>
+    <label>メールアドレス：</label>
+    <input type="text" th:field="*{student.email}" required />
+  </div>
+
+  <div>
+    <label>地域：</label>
+    <input type="text" th:field="*{student.region}" required />
+  </div>
+
+  <div>
+    <label>年齢：</label>
+    <input type="text" th:field="*{student.age}" required />
+  </div>
+
+  <div>
+    <label>性別：</label>
+    <select th:field="*{student.gender}" required>
+      <option value="dansei">男性</option>
+      <option value="zyosei">女性</option>
+      <option value="sonota">その他</option>
+    </select>
+  </div>
+
+  <div>
+    <label>備考：</label>
+    <textarea th:field="*{student.remark}"></textarea>
+  </div>
+
+  <!-- students_courses -->
+  <input type="hidden" th:field="*{studentsCourses[0].id}" />
+
+  <!-- hiddenで保持する -->
+  <input type="hidden" th:field="*{studentsCourses[0].startDate}" />
+  <input type="hidden" th:field="*{studentsCourses[0].endDate}" />
+
+  <div>
+    <label>コース名：</label>
+    <input type="text" th:field="*{studentsCourses[0].courseName}" required />
+  </div>
+
+  <button type="submit">更新</button>
+
+</form>
+</body>
+</html>
