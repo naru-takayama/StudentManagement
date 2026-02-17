@@ -7,6 +7,7 @@
 <body>
 <h1>受講生更新</h1>
 <form th:action="@{/updateStudent}" th:object="${updateStudent}" method="post">
+  <input type="hidden" th:field="*{student.id}" />
   <div>
     <label for="name">名前：</label>
     <input type="text" id="name" th:field="*{student.fullName}" required />
@@ -45,12 +46,15 @@
     <textarea th:field="*{student.remark}"></textarea>
   </div>
   <div>
-    <label for="name">コース名：</label>
-    <input type="text" th:field="*{studentsCourses[0].courseName}" required />
-  </div>
-  </div>
-  <button type="submit">更新</button>
-  </div>
+    <input type="hidden" th:field="*{studentsCourses[0].id}" />
+    <div>
+      <label>コース名：</label>
+      <input type="text"
+             th:field="*{studentsCourses[0].courseName}"
+             required />
+    </div>
+    <button type="submit">更新</button>
+ 　 </div>
 </form>
 </body>
 </html>

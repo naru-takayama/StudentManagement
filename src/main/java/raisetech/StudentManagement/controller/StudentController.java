@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import raisetech.StudentManagement.controller.converter.StudentConverter;
 import raisetech.StudentManagement.data.Student;
@@ -43,10 +44,10 @@ public class StudentController {
   }
 
   @GetMapping("/newStudent")
-  public String newStudent(Model model){
+  public String newStudent(Model model) {
     StudentDetail detail = new StudentDetail();
     detail.setStudent(new Student());
-    List<StudentsCourses> courses =new ArrayList<>();
+    List<StudentsCourses> courses = new ArrayList<>();
     courses.add(new StudentsCourses());
     detail.setStudentsCourses(courses);
     model.addAttribute("studentDetail", detail);
@@ -54,11 +55,30 @@ public class StudentController {
   }
 
   @PostMapping("/registerStudent")
-  public String registerStudent(@ModelAttribute StudentDetail studentDetail, BindingResult result){
-    if(result.hasErrors()){
+  public String registerStudent(@ModelAttribute StudentDetail studentDetail, BindingResult result) {
+    if (result.hasErrors()) {
       return "registerStudent";
     }
     service.registerStudent(studentDetail);
+    return "redirect:/studentList";
+  }
+  // 更新画面表示
+  @GetMapping("/updateStudent/{id}")
+  public String showUpdate(@PathVariable String id, Model model) {
+
+    StudentDetail studentDetail = service.searchStudent(id);
+
+    model.addAttribute("updateStudent", studentDetail);
+
+    return "updateStudent";
+  }
+  // 更新処理
+  @PostMapping("/updateStudent")
+  public String updateStudent(@ModelAttribute StudentDetail updateStudent, BindingResult result) {
+    if (result.hasErrors()) {
+      return "updateStudent";
+    }
+    service.updateStudent(updateStudent);
     return "redirect:/studentList";
   }
 }
