@@ -63,16 +63,13 @@ public class StudentService {
   public StudentDetail searchStudent(String id) {
     // 学生を取得
     Student student = repository.searchStudentById(id);
-
     //コースを取得
     List<StudentsCourses> courses =
         repository.searchStudentsCoursesByStudentId(Integer.valueOf(id));
-
     //StudentDetailにまとめる
     StudentDetail detail = new StudentDetail();
     detail.setStudent(student);
     detail.setStudentsCourses(courses);
-
     return detail;
   }
 }
