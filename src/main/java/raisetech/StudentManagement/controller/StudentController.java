@@ -65,9 +65,7 @@ public class StudentController {
   // 更新画面表示
   @GetMapping("/updateStudent/{id}")
   public String showUpdate(@PathVariable String id, Model model) {
-
     StudentDetail studentDetail = service.searchStudent(id);
-
     model.addAttribute("updateStudent", studentDetail);
 
     return "updateStudent";

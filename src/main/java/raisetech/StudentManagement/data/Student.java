@@ -15,5 +15,5 @@ import lombok.Setter;
   private Integer age;
   private String  gender;
   private String remark;  //備考欄
-  private boolean isDeleted;  //削除フラグ
+  private Boolean isDeleted = false;  //削除フラグ
 }
