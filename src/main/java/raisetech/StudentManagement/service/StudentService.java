@@ -14,7 +14,7 @@ import raisetech.StudentManagement.domain.StudentDetail;
 /**
  * 受講生情報を取り扱うサービスです。
  * 受講生の検索や登録・更新処理を行います。
- *
+ *todo:明日35分あたりの動画から続きをやります！
  */
 @Service
 public class StudentService {
