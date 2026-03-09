@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import raisetech.StudentManagement.data.Student;
-import raisetech.StudentManagement.data.StudentsCourses;
+import raisetech.StudentManagement.data.StudentCourse;
 
 /**
  * 受講生テーブルと受講生コース情報テーブルと紐づくRepositoryです。
@@ -23,15 +23,9 @@ public interface StudentRepository {
   List<Student> search();
 
   /**
-   * 受講生のコース情報の全件検索を行います。
-   * @return 受講生コース情報（全件）
-   */
-  @Select("SELECT * FROM students_courses")
-  List<StudentsCourses> searchStudentsCourses();
-
-  /**
    * 受講生検索を行います。
    * IDに紐づく受講生情報を取得したあと、その受講生に紐づく受講生コース情報を取得して設定します。
+   *
    * @param id 受講生ID
    * @return 受講生
    */
@@ -39,33 +33,60 @@ public interface StudentRepository {
   Student searchStudent(String id);
 
   /**
+   * 受講生のコース情報の全件検索を行います。
+   *
+   * @return 受講生コース情報（全件）
+   */
+  @Select("SELECT * FROM students_courses")
+  List<StudentCourse> searchStudentCourseList();
+
+  /**
    * 受講生IDに紐づく受講生コース情報を検索します。
+   *
    * @param studentId 受講生ID
    * @return 受講生IDに紐づく受講生コース情報
    */
   @Select("SELECT * FROM students_courses WHERE student_id = #{studentId}")
-  List<StudentsCourses> searchStudentsCoursesByStudentId(Integer studentId);
+  List<StudentCourse> searchStudentCourse(Integer studentId);
 
-  //学生登録用
+  /**
+   * 受講生を新規登録します。IDに関しては自動採番を行う。
+   *
+   * @param student 受講生
+   */
   @Insert("INSERT INTO students(full_name, furigana, nickname, email, region, age, gender, remark, is_deleted) "
       + "VALUES(#{fullName}, #{furigana}, #{nickname}, #{email}, #{region},#{age}, #{gender}, #{remark}, "
       + "COALESCE(#{isDeleted}, false))")
   @Options(useGeneratedKeys = true, keyProperty = "id")
-  void insertStudent(Student student);
+  void registerStudent(Student student);
 
+  /**
+   * 受講生コース情報を新規登録します。IDに関しては自動採番を行う。
+   * @param studentCourse 受講生
+   */
   @Insert("INSERT INTO students_courses(student_id, course_name, start_date, end_date)"
       + " VALUES(#{studentId}, #{courseName}, #{startDate}, #{endDate})")
   @Options(useGeneratedKeys = true, keyProperty = "id")
-  void insertStudentsCourses(StudentsCourses studentsCourses);
+  void registerStudentCourse(StudentCourse studentCourse);
 
-  //学生更新用
+  /**
+   * 受講生を更新します。
+   *
+   * @param student 受講生
+   */
   @Update("UPDATE students SET full_name = #{fullName}, furigana = #{furigana}, nickname = #{nickname}, "
       + "email = #{email}, region = #{region}, age = #{age}, gender = #{gender}, "
       + "remark = #{remark}, is_deleted = #{isDeleted} WHERE id = #{id}")
   void updateStudent(Student student);
 
+  /**
+   * 受講生コース情報のコース名を更新します。
+   *
+   * @param studentCourse 受講生コース情報
+   */
   @Update("UPDATE students_courses SET course_name = #{courseName}, start_date = #{startDate}, "
       + "end_date = #{endDate} WHERE id = #{id}")
-  void updateStudentsCourse(StudentsCourses course);
-  List<StudentsCourses> searchStudentsCourses(Integer id);
+  void updateStudentCourse(StudentCourse studentCourse);
+
+
 }
