@@ -14,7 +14,7 @@ import raisetech.StudentManagement.domain.StudentDetail;
 /**
  * 受講生情報を取り扱うサービスです。
  * 受講生の検索や登録・更新処理を行います。
- *todo:明日35分あたりの動画から続きをやります！
+ *
  */
 @Service
 public class StudentService {
@@ -49,8 +49,17 @@ public class StudentService {
    */
   public StudentDetail searchStudent(String id) {
     Student student = repository.searchStudent(id);
-    List<StudentCourse> studentCourse = repository.searchStudentCourse(student.getId());
-    return new StudentDetail(student,studentCourse);
+    if (student == null) {
+      throw new IllegalArgumentException("登録のないIDです");
+    }
+
+    List<StudentCourse> courses = repository.searchStudentCourse(student.getId());
+
+    StudentDetail detail = new StudentDetail();
+    detail.setStudent(student);
+    detail.setStudentCourseList(courses);
+
+    return detail;
   }
 
   /**

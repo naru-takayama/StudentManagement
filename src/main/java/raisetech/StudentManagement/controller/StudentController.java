@@ -1,16 +1,17 @@
 package raisetech.StudentManagement.controller;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import raisetech.StudentManagement.domain.StudentDetail;
 import raisetech.StudentManagement.service.StudentService;
 
 /**
  * 受講生の検索や登録、更新を行うControllerです。
- * todo:講座通りに修正済み
  */
 @Validated
 @RestController
@@ -19,6 +20,7 @@ public class StudentController {
 
   @Autowired
   public StudentController(StudentService service) {
+
     this.service = service;
   }
 
@@ -26,7 +28,6 @@ public class StudentController {
    * 受講生詳細一覧検索です。
    * 全件検索を行うので、条件指定は行いません。
    * @return  受講生詳細一覧（全件）
-   * todo:講座通りに修正済み
    */
   @GetMapping("/studentList")
   public List<StudentDetail> getStudentList() {
@@ -42,8 +43,14 @@ public class StudentController {
    *
    */
   @GetMapping("/student/{id}")
-  public StudentDetail getStudent(@PathVariable @Size(min=1,max =3) String id) {
-    return service.searchStudent(id);
+  public ResponseEntity<?> getStudent(@PathVariable @Size(min = 1, max = 3) String id) {
+
+    try {
+      StudentDetail student = service.searchStudent(id);
+      return ResponseEntity.ok(student);
+    } catch (IllegalArgumentException e) {
+      return ResponseEntity.badRequest().body(e.getMessage());
+    }
   }
 
   /**
@@ -53,9 +60,9 @@ public class StudentController {
    * @return  実行結果
      */
   @PostMapping("/registerStudent")
-  public ResponseEntity<StudentDetail> registerStudent(@RequestBody StudentDetail studentDetail) {
-    StudentDetail reseponseStudentDetail =service.registerStudent(studentDetail);
-    return ResponseEntity.ok (reseponseStudentDetail);
+  public ResponseEntity<StudentDetail> registerStudent(@Valid @RequestBody StudentDetail studentDetail) {
+    StudentDetail reseponseStudentDetail = service.registerStudent(studentDetail);
+    return ResponseEntity.ok(reseponseStudentDetail);
   }
   /**
    * 受講生詳細の更新を行います。
@@ -68,5 +75,15 @@ public class StudentController {
   public ResponseEntity<String> updateStudent(@RequestBody StudentDetail studentDetail) {
     service.updateStudent(studentDetail);
     return ResponseEntity.ok ("更新処理が成功しました。");
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<String> handleValidationException(MethodArgumentNotValidException ex) {
+
+    String message = ex.getBindingResult()
+        .getFieldError()
+        .getDefaultMessage();
+
+    return ResponseEntity.badRequest().body(message);
   }
 }
