@@ -1,31 +1,33 @@
 package raisetech.StudentManagement.controller;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import raisetech.StudentManagement.domain.StudentDetail;
 import raisetech.StudentManagement.service.StudentService;
 
 /**
  * 受講生の検索や登録、更新を行うControllerです。
- * todo:講座通りに修正済み
  */
+@Validated
 @RestController
 public class StudentController {
   private StudentService service;
 
   @Autowired
   public StudentController(StudentService service) {
+
     this.service = service;
   }
 
   /**
-   * 受講生一覧検索です。
+   * 受講生詳細一覧検索です。
    * 全件検索を行うので、条件指定は行いません。
-   * @return  受講生一覧（全件）
-   * todo:講座通りに修正済み
+   * @return  受講生詳細一覧（全件）
    */
   @GetMapping("/studentList")
   public List<StudentDetail> getStudentList() {
@@ -33,34 +35,55 @@ public class StudentController {
   }
 
   /**
-   * 受講生検索です。
+   * 受講生詳細検索です。
    * ID　に紐づく任意の受講生の情報を取得します。
    *
    * @param id 受講生ID
    * @return 受講生
-   * todo:講座通りに編集済み
+   *
    */
   @GetMapping("/student/{id}")
-  public StudentDetail getStudent(@PathVariable String id) {
-    return service.searchStudent(id);
+  public ResponseEntity<?> getStudent(@PathVariable @Size(min = 1, max = 3) String id) {
+
+    try {
+      StudentDetail student = service.searchStudent(id);
+      return ResponseEntity.ok(student);
+    } catch (IllegalArgumentException e) {
+      return ResponseEntity.badRequest().body(e.getMessage());
+    }
   }
 
   /**
-   * 新規登録処理
-   * todo:講座通りに編集済み
-   */
+   * 受講生詳細の登録を行います
+   *
+   * @param studentDetail 受講生詳細
+   * @return  実行結果
+     */
   @PostMapping("/registerStudent")
-  public ResponseEntity<StudentDetail> registerStudent(@RequestBody StudentDetail studentDetail) {
-    StudentDetail reseponseStudentDetail =service.registerStudent(studentDetail);
-    return ResponseEntity.ok (reseponseStudentDetail);
+  public ResponseEntity<StudentDetail> registerStudent(@Valid @RequestBody StudentDetail studentDetail) {
+    StudentDetail reseponseStudentDetail = service.registerStudent(studentDetail);
+    return ResponseEntity.ok(reseponseStudentDetail);
   }
   /**
-   * 更新処理
-   * todo:講座通りに編集済み
+   * 受講生詳細の更新を行います。
+   * キャンセルフラグの更新もここで行います（論理削除）
+   *
+   * @param studentDetail 受講生詳細
+   * @return  実行結果
    */
-  @PostMapping("/updateStudent")
+  @PutMapping("/updateStudent")
   public ResponseEntity<String> updateStudent(@RequestBody StudentDetail studentDetail) {
     service.updateStudent(studentDetail);
     return ResponseEntity.ok ("更新処理が成功しました。");
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<String> handleValidationException(MethodArgumentNotValidException ex) {
+
+    String message = ex.getBindingResult()
+        .getFieldError()
+        .getDefaultMessage();
+
+    return ResponseEntity.badRequest().body(message);
   }
 }

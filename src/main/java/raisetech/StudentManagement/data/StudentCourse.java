@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
   @Getter
   @Setter
-  public class StudentsCourses {
+  public class StudentCourse {
   private Integer id;
   private Integer studentId;
   private String courseName;
