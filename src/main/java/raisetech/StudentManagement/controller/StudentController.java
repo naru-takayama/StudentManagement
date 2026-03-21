@@ -5,9 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import raisetech.StudentManagement.domain.StudentDetail;
+import raisetech.StudentManagement.exception.TestException;
 import raisetech.StudentManagement.service.StudentService;
 
 /**
@@ -30,8 +30,8 @@ public class StudentController {
    * @return  受講生詳細一覧（全件）
    */
   @GetMapping("/studentList")
-  public List<StudentDetail> getStudentList() {
-    return service.searchStudentList();
+  public List<StudentDetail> getStudentList() throws TestException {
+    throw new TestException("エラーが発生しました。");
   }
 
   /**
@@ -43,14 +43,8 @@ public class StudentController {
    *
    */
   @GetMapping("/student/{id}")
-  public ResponseEntity<?> getStudent(@PathVariable @Size(min = 1, max = 3) String id) {
-
-    try {
-      StudentDetail student = service.searchStudent(id);
-      return ResponseEntity.ok(student);
-    } catch (IllegalArgumentException e) {
-      return ResponseEntity.badRequest().body(e.getMessage());
-    }
+  public StudentDetail getStudent(@PathVariable @Size(min = 1, max = 3) String id) {
+    return service.searchStudent(id);
   }
 
   /**
@@ -75,15 +69,5 @@ public class StudentController {
   public ResponseEntity<String> updateStudent(@RequestBody StudentDetail studentDetail) {
     service.updateStudent(studentDetail);
     return ResponseEntity.ok ("更新処理が成功しました。");
-  }
-
-  @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<String> handleValidationException(MethodArgumentNotValidException ex) {
-
-    String message = ex.getBindingResult()
-        .getFieldError()
-        .getDefaultMessage();
-
-    return ResponseEntity.badRequest().body(message);
   }
 }
