@@ -1,6 +1,7 @@
 package raisetech.StudentManagement.data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import java.time.LocalDate;
@@ -18,5 +19,6 @@ public class StudentCourse {
    @NotBlank
    private String courseName;
    private LocalDate startDate;
+  @FutureOrPresent(message = "過去の日付を入力しないでください")
    private LocalDate endDate;
 }
