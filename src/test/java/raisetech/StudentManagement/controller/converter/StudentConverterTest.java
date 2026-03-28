@@ -86,11 +86,11 @@ class StudentConverterTest {
     List<StudentCourse> studentCourseList =
         List.of(course1, course2);
 
-    // Act
+
     List<StudentDetail> result =
         converter.convertStudentDetails(studentList, studentCourseList);
 
-    // Assert
+
     assertEquals(1, result.size());
 
     StudentDetail studentDetail = result.stream()
@@ -103,7 +103,7 @@ class StudentConverterTest {
 
   @Test
   void 紐づくコースがない場合は空リストになること() {
-    // Arrange
+
     Student student = new Student();
     student.setId(1);
 
@@ -123,11 +123,10 @@ class StudentConverterTest {
 
   @Test
   void 受講生が空の場合は空リストが返ること() {
-    // Act
+
     List<StudentDetail> result =
         converter.convertStudentDetails(new ArrayList<>(), new ArrayList<>());
 
-    // Assert
     assertTrue(result.isEmpty());
   }
 }
