@@ -143,3 +143,5 @@ class StudentRepositoryTest {
     assertThat(updated.getEndDate()).isEqualTo(LocalDate.of(2027, 3, 20));
   }
 }
+
+//todo:Git Hubに反映できているかテスト
