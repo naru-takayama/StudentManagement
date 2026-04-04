@@ -65,23 +65,26 @@ class StudentControllerTest {
                 """
                     
                     {
-                    "student": {
-                      "fullName": "Ami Takayama",
-                      "furigana": "Ami Takayama",
-                      "nickname": "Amimaru",
-                      "email": "Ami_takayama@example.com",
-                      "region": "Miyagi Sendai",
-                      "age": 23,
-                      "gender": "zyosei",
-                      "remark": "",
-                      "isDeleted": false
-                      },
-                     "studentCourseList": [
-                        {
-                         "courseName": "AWS"
-                        }
-                      ]
-                    }
+                       "student": {
+                         "fullName": "Ami Takayama",
+                         "furigana": "Ami Takayama",
+                         "nickname": "Amimaru",
+                         "email": "Ami_takayama@example.com",
+                         "region": "Miyagi Sendai",
+                         "age": 23,
+                         "gender": "zyosei",
+                         "remark": "",
+                         "isDeleted": false
+                       },
+                       "studentCourseList": [
+                         {
+                           "courseName": "AWS",
+                           "startDate": "2026-03-20",
+                           "endDate": "2027-03-20",
+                           "status": "jukou_shuryou"
+                         }
+                       ]
+                     }
                     """
             ))
         .andExpect(status().isOk());
@@ -96,28 +99,29 @@ class StudentControllerTest {
             .content(
                 """
                     {
-                      "student": {
-                        "id": 33,
-                        "fullName": "Ami Takayama",
-                        "furigana": "Ami Takayama",
-                        "nickname": "Amimaru",
-                        "email": "Ami_takayama@example.com",
-                        "region": "Miyagi Sendai",
-                        "age": 23,
-                        "gender": "zyosei",
-                        "remark": "",
-                        "isDeleted": false
-                      },
-                      "studentCourseList": [
-                        {
-                          "id": 10,
-                          "studentId": 26,
-                          "courseName": "AWS",
-                          "startDate": "2026-03-20",
-                          "endDate": "2027-03-20"
-                        }
-                      ]
-                    }
+                       "student": {
+                         "id": 33,
+                         "fullName": "Ami Takayama",
+                         "furigana": "Ami Takayama",
+                         "nickname": "Amimaru",
+                         "email": "Ami_takayama@example.com",
+                         "region": "Miyagi Sendai",
+                         "age": 23,
+                         "gender": "zyosei",
+                         "remark": "",
+                         "isDeleted": false
+                       },
+                       "studentCourseList": [
+                         {
+                           "id": 11,
+                           "studentId": 33,
+                           "courseName": "AWS",
+                           "startDate": "2026-03-20",
+                           "endDate": "2027-03-20",
+                           "status": "jukou_shuryou"
+                         }
+                       ]
+                     }
                     """
             ))
         .andExpect(status().isOk());

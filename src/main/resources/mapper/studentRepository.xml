@@ -25,6 +25,7 @@
     <result column="course_name" property="courseName"/>
     <result column="start_date" property="startDate"/>
     <result column="end_date" property="endDate"/>
+    <result column="status" property="status"/>
   </resultMap>
 
 
@@ -96,9 +97,9 @@
     keyProperty="id">
 
     INSERT INTO students_courses
-    (student_id, course_name, start_date, end_date)
+    (student_id, course_name, start_date, end_date,status)
     VALUES
-    (#{studentId}, #{courseName}, #{startDate}, #{endDate})
+    (#{studentId}, #{courseName}, #{startDate}, #{endDate}, #{status})
   </insert>
 
   <!-- 更新 -->
@@ -108,7 +109,8 @@
     UPDATE students_courses
     SET course_name = #{courseName},
     start_date = #{startDate},
-    end_date = #{endDate}
+    end_date = #{endDate},
+    status = #{status}
     WHERE id = #{id}
   </update>
 
