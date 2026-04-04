@@ -17,3 +17,6 @@ VALUES(1,1,'Java Basic','2025-04-01','2025-06-30'),
       (9,21,'Java Standard','2026-02-22','2027-02-22'),
       (10,32,'AWS','2026-03-20','2027-03-20'),
       (11,33,'AWS','2026-03-20','2027-03-20');
+
+ALTER TABLE students ALTER COLUMN id RESTART WITH 100;
+ALTER TABLE students_courses ALTER COLUMN id RESTART WITH 100;
