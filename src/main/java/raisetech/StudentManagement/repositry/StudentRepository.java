@@ -1,8 +1,10 @@
 package raisetech.StudentManagement.repositry;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import raisetech.StudentManagement.data.Student;
 import raisetech.StudentManagement.data.StudentCourse;
+import raisetech.StudentManagement.request.StudentSearchCondition;
 
 /**
  * 受講生テーブルと受講生コース情報テーブルと紐づくRepositoryです。
@@ -68,4 +70,12 @@ public interface StudentRepository {
    */
   void updateStudentCourse(StudentCourse studentCourse);
 
+  /**
+   * 検索条件に一致する受講生情報を取得します。
+   *
+   * @param condition 受講生検索条件
+   * @return 条件に一致する受講生一覧
+   */
+  List<Student> searchByCondition(@Param("condition") StudentSearchCondition condition);
 }
+
