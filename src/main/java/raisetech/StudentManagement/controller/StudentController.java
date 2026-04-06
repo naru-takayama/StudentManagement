@@ -7,9 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import raisetech.StudentManagement.data.Student;
 import raisetech.StudentManagement.domain.StudentDetail;
-import raisetech.StudentManagement.exception.TestException;
 import raisetech.StudentManagement.service.StudentService;
+import raisetech.StudentManagement.request.StudentSearchCondition;
 
 /**
  * 受講生の検索や登録、更新を行うControllerです。
@@ -75,4 +76,8 @@ public class StudentController {
     return ResponseEntity.ok ("更新処理が成功しました。");
   }
 
+  @GetMapping("/students")
+  public List<Student> searchStudents(StudentSearchCondition condition) {
+    return service.searchStudent(String);
+  }
 }
