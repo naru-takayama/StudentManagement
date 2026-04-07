@@ -17,6 +17,7 @@ public class StudentSearchCondition {
 
   private Integer minAge;
   private Integer maxAge;
+  private String status;
 
   /**
    * 検索条件が何も指定されていないか判定

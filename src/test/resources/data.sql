@@ -22,7 +22,7 @@ VALUES
       (33, 'AWS', '2026-03-20', '2027-03-20', 'jukou_shuryou');
 
 -- AUTO_INCREMENT を 100 から開始
-ALTER TABLE students_courses AUTO_INCREMENT = 100;
+ALTER TABLE students_courses ALTER COLUMN id RESTART WITH 100;
 
 ALTER TABLE students ALTER COLUMN id RESTART WITH 100;
 ALTER TABLE students_courses ALTER COLUMN id RESTART WITH 100;

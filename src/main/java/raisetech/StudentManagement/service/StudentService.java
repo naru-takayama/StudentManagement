@@ -47,12 +47,27 @@ public class StudentService {
       studentList = repository.searchByCondition(condition);
     }
 
-    // コース情報取得（共通処理）
+    // コース情報取得
     List<StudentCourse> studentCourseList = repository.searchStudentCourseList();
 
-    return converter.convertStudentDetails(studentList, studentCourseList);
-  }
+    // Student + Course を結合
+    List<StudentDetail> studentDetails =
+        converter.convertStudentDetails(studentList, studentCourseList);
 
+    // status条件で絞り込み
+    if (condition.getStatus() != null && !condition.getStatus().isEmpty()) {
+      return studentDetails.stream()
+          .filter(detail ->
+              detail.getStudentCourseList().stream()
+                  .anyMatch(course ->
+                      condition.getStatus().equals(course.getStatus())
+                  )
+          )
+          .toList();
+    }
+
+    return studentDetails;
+  }
   /**
    * 受講生詳細検索です。 IDに紐づく受講生情報を取得した後、その受講生に紐づく受講生コース情報を取得して設定します。
    *
@@ -83,6 +98,13 @@ public class StudentService {
   @Transactional
   public StudentDetail registerStudent(StudentDetail studentDetail) {
     Student student = studentDetail.getStudent();
+
+    if (studentDetail.getStudent() == null) {
+      throw new IllegalArgumentException("StudentDetail.student が null です");
+    }
+    if (studentDetail.getStudent().getFullName() == null) {
+      throw new IllegalArgumentException("Student.fullName が null です");
+    }
 
     repository.registerStudent(student);
     studentDetail.getStudentCourseList().forEach(studentCourse -> {

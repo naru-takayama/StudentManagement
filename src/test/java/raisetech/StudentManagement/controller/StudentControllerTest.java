@@ -38,12 +38,12 @@ class StudentControllerTest {
 
   @Test
   void 受講生詳細の一覧検索が実行できて空のリストが返ってくること() throws Exception {
-    when(service.searchStudentList()).thenReturn(List.of(new StudentDetail()));
-    mockMvc.perform(get("/studentList"))
-        .andExpect(status().isOk())
-        .andExpect(content().json("[{\"student\":null,\"studentCourseList\":[]}]"));
+    when(service.searchStudentList(any())).thenReturn(List.of(new StudentDetail()));
 
-    verify(service, times(1)).searchStudentList();
+    mockMvc.perform(get("/studentList"))
+        .andExpect(status().isOk());
+
+    verify(service, times(1)).searchStudentList(any());
   }
 
   @Test

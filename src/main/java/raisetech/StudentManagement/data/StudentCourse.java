@@ -21,13 +21,6 @@ public class StudentCourse {
    private LocalDate startDate;
   @FutureOrPresent(message = "過去の日付を入力しないでください")
    private LocalDate endDate;
-
-   private Status status;
-   //指定の文字以外入力できないように設定
-   public enum Status {
-    kari_moshikomi,
-    hon_moshikomi,
-    jukochu,
-    jukou_shuryou
+   private String status;
   }
-}
+

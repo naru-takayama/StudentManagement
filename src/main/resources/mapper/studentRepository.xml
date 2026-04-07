@@ -35,62 +35,72 @@
 
   <!-- 条件検索 -->
   <select id="searchByCondition" resultMap="studentMap">
-    SELECT * FROM students
+    SELECT DISTINCT s.*
+    FROM students s
+    LEFT JOIN students_courses sc ON s.id = sc.student_id
     <where>
-      is_deleted = false
+      s.is_deleted = false
 
       <if test="condition.fullName != null and condition.fullName != ''">
-        AND full_name LIKE CONCAT('%', #{condition.fullName}, '%')
+        AND s.full_name LIKE CONCAT('%', #{condition.fullName}, '%')
       </if>
 
       <if test="condition.furigana != null and condition.furigana != ''">
-        AND furigana LIKE CONCAT('%', #{condition.furigana}, '%')
+        AND s.furigana LIKE CONCAT('%', #{condition.furigana}, '%')
       </if>
 
       <if test="condition.nickname != null and condition.nickname != ''">
-        AND nickname LIKE CONCAT('%', #{condition.nickname}, '%')
+        AND s.nickname LIKE CONCAT('%', #{condition.nickname}, '%')
       </if>
 
       <if test="condition.email != null and condition.email != ''">
-        AND email LIKE CONCAT('%', #{condition.email}, '%')
+        AND s.email LIKE CONCAT('%', #{condition.email}, '%')
       </if>
 
       <if test="condition.region != null and condition.region != ''">
-        AND region = #{condition.region}
+        AND s.region = #{condition.region}
       </if>
 
       <if test="condition.gender != null and condition.gender != ''">
-        AND gender = #{condition.gender}
+        AND s.gender = #{condition.gender}
       </if>
 
-      <!-- 年齢条件（XMLエスケープ済み） -->
       <if test="condition.minAge != null">
-        AND age &gt;= #{condition.minAge}
+        AND s.age &gt;= #{condition.minAge}
       </if>
 
       <if test="condition.maxAge != null">
-        AND age &lt;= #{condition.maxAge}
+        AND s.age &lt;= #{condition.maxAge}
+      </if>
+
+      <!-- ステータス条件 -->
+      <if test="condition.status != null and condition.status != ''">
+        AND sc.status = #{condition.status}
       </if>
 
     </where>
   </select>
 
+  <!-- ========================= -->
   <!-- 登録 -->
-  <insert id="registerStudent"
-    parameterType="raisetech.StudentManagement.data.Student"
-    useGeneratedKeys="true"
-    keyProperty="id">
+  <!-- ========================= -->
 
-    INSERT INTO students
+  <!-- student登録 -->
+  <!-- Student登録 -->
+  <insert id="registerStudent"
+          parameterType="raisetech.StudentManagement.data.Student"
+          useGeneratedKeys="true"
+          keyProperty="id">
+          INSERT INTO students
     (full_name, furigana, nickname, email, region, age, gender, remark, is_deleted)
     VALUES
-    (#{fullName}, #{furigana}, #{nickname}, #{email}, #{region}, #{age},
-    #{gender}, #{remark}, COALESCE(#{isDeleted}, false))
+    (#{fullName}, #{furigana}, #{nickname}, #{email}, #{region}, #{age}, #{gender}, #{remark},
+     COALESCE(#{isDeleted}, false))
   </insert>
 
-  <!-- 更新 -->
+  <!-- student更新 -->
   <update id="updateStudent"
-    parameterType="raisetech.StudentManagement.data.Student">
+    parameterType="raisetech.StudentManagement.domain.StudentDetail">
 
     UPDATE students
     SET full_name = #{fullName},
@@ -118,27 +128,18 @@
     <result column="status" property="status"/>
   </resultMap>
 
-  <!-- ★これが今回のエラー原因だった部分 -->
-  <select id="searchStudentCourseList" resultMap="studentCourseMap">
-    SELECT * FROM students_courses
-  </select>
-
-  <select id="searchStudentCourse" resultMap="studentCourseMap">
-    SELECT * FROM students_courses
-    WHERE student_id = #{studentId}
-  </select>
-
+  <!-- StudentCourse登録 -->
   <insert id="registerStudentCourse"
-    parameterType="raisetech.StudentManagement.data.StudentCourse"
-    useGeneratedKeys="true"
-    keyProperty="id">
-
+          parameterType="raisetech.StudentManagement.data.StudentCourse"
+          useGeneratedKeys="true"
+          keyProperty="id">
     INSERT INTO students_courses
-    (student_id, course_name, start_date, end_date, status)
+    (student_id, course_name, start_date, end_date,status)
     VALUES
-    (#{studentId}, #{courseName}, #{startDate}, #{endDate}, #{status})
+    (#{studentId}, #{courseName}, #{startDate}, #{endDate},#{status})
   </insert>
 
+  <!-- studentCourse更新 -->
   <update id="updateStudentCourse"
     parameterType="raisetech.StudentManagement.data.StudentCourse">
 
@@ -149,5 +150,16 @@
     status = #{status}
     WHERE id = #{id}
   </update>
+
+  <!-- studentIdで検索 -->
+  <select id="searchStudentCourse" resultMap="studentCourseMap">
+    SELECT * FROM students_courses
+    WHERE student_id = #{studentId}
+  </select>
+
+  <!-- 全件検索 -->
+  <select id="searchStudentCourseList" resultMap="studentCourseMap">
+    SELECT * FROM students_courses
+  </select>
 
 </mapper>

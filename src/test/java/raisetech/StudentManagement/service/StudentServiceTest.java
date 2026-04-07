@@ -1,24 +1,23 @@
 package raisetech.StudentManagement.service;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.jupiter.api.Assertions;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import raisetech.StudentManagement.controller.converter.StudentConverter;
 import raisetech.StudentManagement.data.Student;
 import raisetech.StudentManagement.data.StudentCourse;
 import raisetech.StudentManagement.domain.StudentDetail;
 import raisetech.StudentManagement.repositry.StudentRepository;
+import raisetech.StudentManagement.request.StudentSearchCondition;
 
 @ExtendWith(MockitoExtension.class)
 class StudentServiceTest {
@@ -28,31 +27,34 @@ class StudentServiceTest {
 
   @Mock
   private StudentConverter converter;
+
   private StudentService sut;
 
   @BeforeEach
-  void before(){
+  void before() {
     sut = new StudentService(repository, converter);
   }
 
   @Test
-  void 受講生詳細の一覧検索＿リポジトリとコンバーターの処理が適切に呼び出せていること(){
-    //sutという名前にしているのはテスト対象という意味であえてServiseではなくsutにしている
-    //事前準備
-    List<Student> studentList =new ArrayList<>();
+  void 受講生詳細の一覧検索＿リポジトリとコンバーターの処理が適切に呼び出せていること() {
+
+    List<Student> studentList = new ArrayList<>();
     List<StudentCourse> studentCourseList = new ArrayList<>();
+
     when(repository.search()).thenReturn(studentList);
     when(repository.searchStudentCourseList()).thenReturn(studentCourseList);
 
-    sut.searchStudentList();
+    // ★ここだけ修正
+    StudentSearchCondition condition = new StudentSearchCondition();
+    sut.searchStudentList(condition);
 
-    verify(repository,times(1)).search();
-    verify(repository,times(1)).searchStudentCourseList();
-    verify(converter,times(1)).convertStudentDetails(studentList,studentCourseList);
+    verify(repository, times(1)).search();
+    verify(repository, times(1)).searchStudentCourseList();
+    verify(converter, times(1)).convertStudentDetails(studentList, studentCourseList);
   }
 
   @Test
-  void 受講生詳細の検索studentIdと紐づく受講生コース情報を適切に呼び出していること(){
+  void 受講生詳細の検索studentIdと紐づく受講生コース情報を適切に呼び出していること() {
 
     String studentId = "26";
     Integer id = Integer.valueOf(studentId);
@@ -74,7 +76,7 @@ class StudentServiceTest {
   }
 
   @Test
-  void 受講生詳細の新規登録＿リポジトリの処理が適切に呼び出せていること(){
+  void 受講生詳細の新規登録＿リポジトリの処理が適切に呼び出せていること() {
 
     Student student = new Student();
     StudentCourse studentCourse = new StudentCourse();
@@ -95,7 +97,7 @@ class StudentServiceTest {
   }
 
   @Test
-  void 受講生詳細の更新＿指定したIdの更新処理が呼び出されていること(){
+  void 受講生詳細の更新＿指定したIdの更新処理が呼び出されていること() {
 
     Student student = new Student();
     student.setId(26);
@@ -109,5 +111,24 @@ class StudentServiceTest {
 
     verify(repository, times(1)).updateStudent(student);
     verify(repository, times(1)).updateStudentCourse(studentCourse);
+  }
+
+  @Test
+  void 条件付き検索ができること() {
+
+    StudentSearchCondition condition = new StudentSearchCondition();
+    condition.setFullName("Ami");
+
+    List<Student> studentList = new ArrayList<>();
+    List<StudentCourse> studentCourseList = new ArrayList<>();
+
+    when(repository.searchByCondition(condition)).thenReturn(studentList);
+    when(repository.searchStudentCourseList()).thenReturn(studentCourseList);
+
+    sut.searchStudentList(condition);
+
+    verify(repository, times(1)).searchByCondition(condition);
+    verify(repository, times(1)).searchStudentCourseList();
+    verify(converter, times(1)).convertStudentDetails(studentList, studentCourseList);
   }
 }

@@ -1,14 +1,13 @@
 package raisetech.StudentManagement.repositry;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import raisetech.StudentManagement.data.Student;
 import raisetech.StudentManagement.data.StudentCourse;
+import raisetech.StudentManagement.request.StudentSearchCondition;
 
 @MybatisTest
 class StudentRepositoryTest {
@@ -141,5 +140,21 @@ class StudentRepositoryTest {
     assertThat(updated.getCourseName()).isEqualTo("AWS");
     assertThat(updated.getStartDate()).isEqualTo(LocalDate.of(2026, 3, 20));
     assertThat(updated.getEndDate()).isEqualTo(LocalDate.of(2027, 3, 20));
+  }
+  @Test
+  void 条件を指定して受講生検索ができること() {
+
+    // 条件作成
+    StudentSearchCondition condition = new StudentSearchCondition();
+    condition.setFullName("Ami");
+
+    // 実行
+    List<Student> actual = sut.searchByCondition(condition);
+
+    // 検証
+    assertThat(actual).isNotEmpty();
+    assertThat(actual.stream()
+        .map(Student::getFullName))
+        .anyMatch(name -> name.contains("Ami"));
   }
 }
