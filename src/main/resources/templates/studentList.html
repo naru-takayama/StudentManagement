@@ -1,61 +1,44 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <title>受講生一覧</title>
 </head>
-
 <body>
+
 <h1>受講生一覧</h1>
+
 <table border="1">
-  <thead>
   <tr>
     <th>ID</th>
     <th>名前</th>
-    <th>カナ名</th>
-    <th>ニックネーム</th>
-    <th>メールアドレス</th>
-    <th>地域</th>
-    <th>年齢</th>
-    <th>性別</th>
-    <th>備考</th>
-    <th>受講コース</th>
+    <th>メール</th>
+    <th>コース</th>
   </tr>
-  </thead>
 
-  <tbody>
-  <tr th:each="studentDetail : ${studentList}">
-  <td th:text="${studentDetail.student.id}"></td>
-
-    <!-- 名前クリックで更新画面へ -->
-    <td>
-      <a th:href="@{/updateStudent/{id}(id=${studentDetail.student.id})}"
-         th:text="${studentDetail.student.fullName}">
-      </a>
-    </td>
-
-    <td th:text="${studentDetail.student.furigana}"></td>
-    <td th:text="${studentDetail.student.nickname}"></td>
+  <tr th:each="studentDetail : ${studentDetailList}">
+    <!-- 学生情報 -->
+    <td th:text="${studentDetail.student.id}"></td>
+    <td th:text="${studentDetail.student.fullName}"></td>
     <td th:text="${studentDetail.student.email}"></td>
-    <td th:text="${studentDetail.student.region}"></td>
-    <td th:text="${studentDetail.student.age}"></td>
-    <td th:text="${studentDetail.student.gender}"></td>
-    <td th:text="${studentDetail.student.remark}"></td>
 
+    <!-- コース情報 -->
     <td>
-        <span th:if="${#lists.isEmpty(studentDetail.studentsCourses)}">
-          未受講
-        </span>
+      <!-- コースが無い場合 -->
+      <span th:if="${#lists.isEmpty(studentDetail.studentCourseList)}">
+                コース未登録
+            </span>
 
-      <span th:each="course : ${studentDetail.studentsCourses}">
-          <span th:text="${course.courseName}"></span><br>
-        </span>
+      <!-- コースがある場合 -->
+      <ul th:if="${!#lists.isEmpty(studentDetail.studentCourseList)}">
+        <li th:each="course : ${studentDetail.studentCourseList}"
+            th:text="${course.courseName}">
+        </li>
+      </ul>
     </td>
+  </tr>
 
-　</tr>
-　</tbody>
-　</table>
+</table>
 
 </body>
 </html>

@@ -10,6 +10,7 @@ import raisetech.StudentManagement.data.Student;
 import raisetech.StudentManagement.data.StudentCourse;
 import raisetech.StudentManagement.repositry.StudentRepository;
 import raisetech.StudentManagement.domain.StudentDetail;
+import raisetech.StudentManagement.request.StudentSearchCondition;
 
 /**
  * 受講生情報を取り扱うサービスです。
@@ -30,22 +31,48 @@ public class StudentService {
   }
 
   /**
-   * 受講生詳細の一覧検索です。 全件検索を行うので、条件指定は行いません。
-   * @return 受講生一覧（全件）
+   * 受講生詳細一覧検索です。条件が空の場合、全件検索を行います。
    *
+   * @param condition 受講生検索条件
+   * @return 受講生一覧（条件に一致するデータ）
    */
-  public List<StudentDetail> searchStudentList() {
-    List<Student> studentList = repository.search();
-    List<StudentCourse> studentCourseList = repository.searchStudentCourseList();
-    return converter.convertStudentDetails(studentList, studentCourseList);
-  }
+  public List<StudentDetail> searchStudentList(StudentSearchCondition condition) {
 
+    List<Student> studentList;
+
+    // 条件なし → 全件
+    if (condition.isEmpty()) {
+      studentList = repository.search();
+    } else {
+      studentList = repository.searchByCondition(condition);
+    }
+
+    // コース情報取得
+    List<StudentCourse> studentCourseList = repository.searchStudentCourseList();
+
+    // Student + Course を結合
+    List<StudentDetail> studentDetails =
+        converter.convertStudentDetails(studentList, studentCourseList);
+
+    // status条件で絞り込み
+    if (condition.getStatus() != null && !condition.getStatus().isEmpty()) {
+      return studentDetails.stream()
+          .filter(detail ->
+              detail.getStudentCourseList().stream()
+                  .anyMatch(course ->
+                      condition.getStatus().equals(course.getStatus())
+                  )
+          )
+          .toList();
+    }
+
+    return studentDetails;
+  }
   /**
-   * 受講生詳細検索です。
-   * IDに紐づく受講生情報を取得した後、その受講生に紐づく受講生コース情報を取得して設定します。
+   * 受講生詳細検索です。 IDに紐づく受講生情報を取得した後、その受講生に紐づく受講生コース情報を取得して設定します。
+   *
    * @param id 受講生ID
-   * @return 受講生詳細
-   *※相違なし※
+   * @return 受講生詳細 ※相違なし※
    */
   public StudentDetail searchStudent(String id) {
     Student student = repository.searchStudent(id);
@@ -63,17 +90,21 @@ public class StudentService {
   }
 
   /**
-   * 受講生詳細の登録を行います。
-   * 受講生と受講生コース情報を個別に登録し、受講生コース情報には受講生情報を紐づける値と
-   * コース開始日、コース終了日を設定します。
+   * 受講生詳細の登録を行います。 受講生と受講生コース情報を個別に登録し、受講生コース情報には受講生情報を紐づける値と コース開始日、コース終了日を設定します。
    *
-   * @param studentDetail　受講生詳細
-   * @return 登録情報付与した受講生詳細
-   * ※相違なし※
+   * @param studentDetail 受講生詳細
+   * @return 登録情報付与した受講生詳細 ※相違なし※
    */
   @Transactional
   public StudentDetail registerStudent(StudentDetail studentDetail) {
-    Student student =studentDetail.getStudent();
+    Student student = studentDetail.getStudent();
+
+    if (studentDetail.getStudent() == null) {
+      throw new IllegalArgumentException("StudentDetail.student が null です");
+    }
+    if (studentDetail.getStudent().getFullName() == null) {
+      throw new IllegalArgumentException("Student.fullName が null です");
+    }
 
     repository.registerStudent(student);
     studentDetail.getStudentCourseList().forEach(studentCourse -> {
@@ -82,10 +113,12 @@ public class StudentService {
     });
     return studentDetail;
   }
+
   /**
    * 受講生コース情報を登録する際の初期情報を設定する。
-   * @param studentsCourse　受講生コース情報
-   * @param student　受講生
+   *
+   * @param studentsCourse 受講生コース情報
+   * @param student        受講生
    */
   private static void initStudentCourse(StudentCourse studentsCourse, Student student) {
     LocalDate now = LocalDate.now();
@@ -94,11 +127,11 @@ public class StudentService {
     studentsCourse.setStartDate(now);
     studentsCourse.setEndDate(now.plusYears(1));
   }
+
   /**
-   * 受講生詳細の更新を行います。
-   * 受講生情報と受講生コース情報をそれぞれ更新します。
+   * 受講生詳細の更新を行います。 受講生情報と受講生コース情報をそれぞれ更新します。
    *
-   * @param studentDetail　受講生コース情報
+   * @param studentDetail 受講生コース情報
    */
   @Transactional
   public void updateStudent(StudentDetail studentDetail) {
@@ -106,5 +139,4 @@ public class StudentService {
     studentDetail.getStudentCourseList()
         .forEach(studentCourse -> repository.updateStudentCourse(studentCourse));
   }
-
 }

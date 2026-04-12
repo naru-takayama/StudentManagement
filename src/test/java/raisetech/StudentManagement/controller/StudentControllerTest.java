@@ -38,12 +38,12 @@ class StudentControllerTest {
 
   @Test
   void 受講生詳細の一覧検索が実行できて空のリストが返ってくること() throws Exception {
-    when(service.searchStudentList()).thenReturn(List.of(new StudentDetail()));
-    mockMvc.perform(get("/studentList"))
-        .andExpect(status().isOk())
-        .andExpect(content().json("[{\"student\":null,\"studentCourseList\":[]}]"));
+    when(service.searchStudentList(any())).thenReturn(List.of(new StudentDetail()));
 
-    verify(service, times(1)).searchStudentList();
+    mockMvc.perform(get("/studentList"))
+        .andExpect(status().isOk());
+
+    verify(service, times(1)).searchStudentList(any());
   }
 
   @Test
@@ -65,23 +65,26 @@ class StudentControllerTest {
                 """
                     
                     {
-                    "student": {
-                      "fullName": "Ami Takayama",
-                      "furigana": "Ami Takayama",
-                      "nickname": "Amimaru",
-                      "email": "Ami_takayama@example.com",
-                      "region": "Miyagi Sendai",
-                      "age": 23,
-                      "gender": "zyosei",
-                      "remark": "",
-                      "isDeleted": false
-                      },
-                     "studentCourseList": [
-                        {
-                         "courseName": "AWS"
-                        }
-                      ]
-                    }
+                       "student": {
+                         "fullName": "Ami Takayama",
+                         "furigana": "Ami Takayama",
+                         "nickname": "Amimaru",
+                         "email": "Ami_takayama@example.com",
+                         "region": "Miyagi Sendai",
+                         "age": 23,
+                         "gender": "zyosei",
+                         "remark": "",
+                         "isDeleted": false
+                       },
+                       "studentCourseList": [
+                         {
+                           "courseName": "AWS",
+                           "startDate": "2026-03-20",
+                           "endDate": "2027-03-20",
+                           "status": "jukou_shuryou"
+                         }
+                       ]
+                     }
                     """
             ))
         .andExpect(status().isOk());
@@ -96,28 +99,29 @@ class StudentControllerTest {
             .content(
                 """
                     {
-                      "student": {
-                        "id": 33,
-                        "fullName": "Ami Takayama",
-                        "furigana": "Ami Takayama",
-                        "nickname": "Amimaru",
-                        "email": "Ami_takayama@example.com",
-                        "region": "Miyagi Sendai",
-                        "age": 23,
-                        "gender": "zyosei",
-                        "remark": "",
-                        "isDeleted": false
-                      },
-                      "studentCourseList": [
-                        {
-                          "id": 10,
-                          "studentId": 26,
-                          "courseName": "AWS",
-                          "startDate": "2026-03-20",
-                          "endDate": "2027-03-20"
-                        }
-                      ]
-                    }
+                       "student": {
+                         "id": 33,
+                         "fullName": "Ami Takayama",
+                         "furigana": "Ami Takayama",
+                         "nickname": "Amimaru",
+                         "email": "Ami_takayama@example.com",
+                         "region": "Miyagi Sendai",
+                         "age": 23,
+                         "gender": "zyosei",
+                         "remark": "",
+                         "isDeleted": false
+                       },
+                       "studentCourseList": [
+                         {
+                           "id": 11,
+                           "studentId": 33,
+                           "courseName": "AWS",
+                           "startDate": "2026-03-20",
+                           "endDate": "2027-03-20",
+                           "status": "jukou_shuryou"
+                         }
+                       ]
+                     }
                     """
             ))
         .andExpect(status().isOk());

@@ -1,4 +1,5 @@
--- =========================
+-- students データ挿入（修正済）
+--- =========================
 -- students（生徒テーブル）
 -- =========================
 CREATE TABLE students (
@@ -22,6 +23,6 @@ CREATE TABLE students_courses (
                                   student_id INT,
                                   course_name VARCHAR(100),
                                   start_date DATE,
-                                  end_date DATE
+                                  end_date DATE,
+                                  status VARCHAR(20)
 );
-

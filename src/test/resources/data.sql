@@ -1,3 +1,4 @@
+
 INSERT INTO students(id,full_name, furigana, nickname, email, region, age, gender, remark, is_deleted)
 VALUES (1, 'Taro Yamada', 'Taro Yamada', 'TaroYama', 'taro.yamada@example.com', 'Tokyo Shinjuku',35, 'dansei', NULL, 0),
        (2, 'Hanako Sato', 'Hanako Sato', 'Hana', 'hanako.sato@example.com', 'Kanagawa Yokohama', 28,'zyosei', NULL, 0),
@@ -8,15 +9,20 @@ VALUES (1, 'Taro Yamada', 'Taro Yamada', 'TaroYama', 'taro.yamada@example.com', 
        (32, 'test', 'test', 'test', 'test@test.com', 'test', 20, 'test', '', 0),
        (33, 'Ami Takayama', 'Ami Takayama', 'Amimaru', 'Ami_takayama@example.com', 'Miyagi Sendai',23, 'zyosei', '', 0);
 
-INSERT INTO students_courses(id, student_id, course_name, start_date, end_date)
-VALUES(1,1,'Java Basic','2025-04-01','2025-06-30'),
-      (2,1,'Spring Boot','2025-07-01','2025-09-30'),
-      (3,2,'Web Basic','2025-04-01','2025-06-30'),
-      (4,3,'Java Advanced','2025-05-01','2025-07-31'),
-      (5,4,'MySQL','2025-06-01','2025-08-31'),
-      (9,21,'Java Standard','2026-02-22','2027-02-22'),
-      (10,32,'AWS','2026-03-20','2027-03-20'),
-      (11,33,'AWS','2026-03-20','2027-03-20');
+-- studentsデータ挿入（修正済）
+INSERT INTO students_courses(student_id, course_name, start_date, end_date, status)
+VALUES
+      (1, 'Java Basic', '2025-04-01', '2025-06-30', 'jukochu'),
+      (1, 'Spring Boot', '2025-07-01', '2025-09-30', 'hon_moshikomi'),
+      (2, 'Web Basic', '2025-04-01', '2025-06-30', 'jukochu'),
+      (3, 'Java Advanced', '2025-05-01', '2025-07-31', 'jukochu'),
+      (4, 'MySQL', '2025-06-01', '2025-08-31', 'kari_moshikomi'),
+      (21, 'Java Standard', '2026-02-22', '2027-02-22', 'jukochu'),
+      (32, 'AWS', '2026-03-20', '2027-03-20', 'jukou_shuryou'),
+      (33, 'AWS', '2026-03-20', '2027-03-20', 'jukou_shuryou');
+
+-- AUTO_INCREMENT を 100 から開始
+ALTER TABLE students_courses ALTER COLUMN id RESTART WITH 100;
 
 ALTER TABLE students ALTER COLUMN id RESTART WITH 100;
 ALTER TABLE students_courses ALTER COLUMN id RESTART WITH 100;

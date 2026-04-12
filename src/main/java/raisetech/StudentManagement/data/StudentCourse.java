@@ -21,4 +21,6 @@ public class StudentCourse {
    private LocalDate startDate;
   @FutureOrPresent(message = "過去の日付を入力しないでください")
    private LocalDate endDate;
-}
+   private String status;
+  }
+
